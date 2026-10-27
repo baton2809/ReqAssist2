@@ -10,10 +10,19 @@
 # Python
 __pycache__/
 *.pyc
+*.egg-info/
 .venv/
 venv/
 .ruff_cache/
+.mypy_cache/
+.pytest_cache/
 .ipynb_checkpoints/
+
+# Data and artifacts: real documents are confidential, never commit them
+data/
+models/
+*.pkl
+*.parquet
 
 # Node
 node_modules/
