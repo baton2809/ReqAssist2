@@ -37,8 +37,11 @@ LLM-ассистент системного аналитика: проверяе
 
 ```text
 .
+├── .github/workflows/lint.yml    # CI: pre-commit на каждый push и PR
 ├── docs/
 │   └── ml_system_design_doc.md   # ML System Design Doc
+├── src/reqassist/
+│   └── metrics.py                # метрики офлайн-оценки из раздела 2.1 дизайн-документа
 ├── .pre-commit-config.yaml       # хуки pre-commit
 ├── .markdownlint-cli2.yaml       # правила линтера markdown
 ├── pyproject.toml                # конфигурация ruff и dev-зависимости
@@ -69,6 +72,8 @@ uv run pre-commit run --all-files
 - `ruff-check` и `ruff-format` - линтер и форматтер Python-кода
 - `markdownlint-cli2` - стиль markdown-документации
 - `pre-commit-hooks` - пробелы в конце строк, перевод строки в конце файла, валидность YAML/TOML/JSON, конфликты слияния, большие файлы, приватные ключи, запрет прямых коммитов в `main`
+
+Те же хуки запускаются в GitHub Actions на каждый push в `main` и `hw_*` и на каждый pull request.
 
 ## Домашние задания
 
