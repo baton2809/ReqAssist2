@@ -40,12 +40,16 @@ LLM-ассистент системного аналитика: проверяе
 ├── data/
 │   └── README.md                 # описание данных; сами данные внутренние и в git не хранятся
 ├── docs/
-│   └── ml_system_design_doc.md   # ML System Design Doc
+│   ├── ml_system_design_doc.md   # ML System Design Doc
+│   └── hw_2.md                   # навигация по ДЗ №2
 ├── notebooks/
 │   └── 01_eda.ipynb              # EDA документов, чеклиста и набора атак
-├── reports/figures/              # графики EDA
+├── reports/
+│   ├── eda/summary.json          # агрегаты EDA и хеши исходных файлов
+│   └── figures/                  # графики EDA
 ├── src/reqassist/
 │   ├── data/                     # разбор документов Confluence, чеклиста, атак; обезличивание
+│   ├── baseline.py               # бейзлайн B1: проверка чеклиста по заголовкам
 │   └── metrics.py                # метрики офлайн-оценки из раздела 2.1 дизайн-документа
 ├── .pre-commit-config.yaml       # хуки pre-commit
 ├── .markdownlint-cli2.yaml       # правила линтера markdown
