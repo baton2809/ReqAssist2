@@ -2,7 +2,7 @@
 
 from collections import Counter
 from collections.abc import Iterable, Sequence
-from statistics import mean, pstdev
+from statistics import mean
 from typing import Literal
 
 Status = Literal["completed", "partial", "partial_placeholder", "missing", "not_applicable"]
@@ -35,7 +35,24 @@ def score_mae(predicted: Sequence[float], expert: Sequence[float]) -> float:
 
 
 def score_stability(runs: Sequence[float]) -> float:
-    """Стандартное отклонение скора одного документа на повторных запусках."""
+    """Разница между максимальным и минимальным скором одного документа на повторных запусках."""
     if len(runs) < 2:
         raise ValueError("нужно минимум два запуска")
-    return pstdev(runs)
+    return max(runs) - min(runs)
+
+
+def missing_recall(predicted: Sequence[Status], expert: Sequence[Status]) -> float:
+    """Доля пунктов missing по разметке эксперта, которые модель тоже отметила как missing."""
+    pairs = [(p, e) for p, e in zip(predicted, expert, strict=True) if e == "missing"]
+    if not pairs:
+        raise ValueError("в разметке нет пунктов missing")
+    return sum(p == "missing" for p, _ in pairs) / len(pairs)
+
+
+def false_completed_rate(predicted: Sequence[Status], expert: Sequence[Status]) -> float:
+    """Доля незаполненных по разметке эксперта пунктов, которые модель отметила как completed."""
+    gaps = {"missing", "partial", "partial_placeholder"}
+    pairs = [(p, e) for p, e in zip(predicted, expert, strict=True) if e in gaps]
+    if not pairs:
+        raise ValueError("в разметке нет незаполненных пунктов")
+    return sum(p == "completed" for p, _ in pairs) / len(pairs)
