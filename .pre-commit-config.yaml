@@ -31,3 +31,5 @@ repos:
     rev: v0.24.0
     hooks:
       - id: markdownlint-cli2
+        # фиксированная версия node: без неё nodeenv берёт latest и падает на пре-релизах
+        language_version: 22.11.0
