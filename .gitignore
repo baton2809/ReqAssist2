@@ -19,7 +19,8 @@ venv/
 .ipynb_checkpoints/
 
 # Data and artifacts: real documents are confidential, never commit them
-data/
+data/*
+!data/README.md
 models/
 *.pkl
 *.parquet
