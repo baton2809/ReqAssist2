@@ -22,7 +22,10 @@
 
 ```bash
 uv sync --group eda
+uv run --group eda python -m ipykernel install --sys-prefix --name reqassist --display-name "Python (reqassist)"
 REQASSIST_DIR=/путь/к/ReqAssist uv run --group eda jupyter nbconvert --to notebook --execute --inplace notebooks/01_eda.ipynb
 ```
+
+Вторая команда регистрирует ядро Jupyter `reqassist` внутри `.venv`: ноутбук запускается на нём, чтобы использовать пакеты проекта, а не системный Python. Без доступа к внутренним документам ноутбук не выполнится, но все выводы и графики сохранены в нём и видны на GitHub.
 
 Ноутбук печатает только агрегаты, документы обезличены как `doc_01`..`doc_06`. Графики сохраняются в `reports/figures/`.
