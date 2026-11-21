@@ -35,6 +35,22 @@ class ChecklistItem:
         return ITEM_SOURCE.get(self.item_id, "unknown")
 
 
+def load_item_texts(path: Path, item_ids: list[str]) -> dict[str, str]:
+    """Название и описание пунктов для промпта; используются только в памяти, не сохраняются."""
+    texts: dict[str, str] = {}
+    current = None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if m := ITEM_RE.match(line):
+            current = m.group(1) if m.group(1) in item_ids else None
+            if current:
+                texts[current] = m.group(2).strip()
+        elif current and line.strip() and not line.strip().startswith(("*", "###")):
+            texts[current] += ". " + line.strip()
+        elif not line.strip():
+            current = None
+    return texts
+
+
 def parse_checklist(path: Path) -> list[ChecklistItem]:
     """Названия пунктов не сохраняются: в описаниях встречаются ФИО и внутренние системы."""
     items: list[ChecklistItem] = []
