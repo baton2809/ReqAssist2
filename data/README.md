@@ -29,3 +29,34 @@ REQASSIST_DIR=/путь/к/ReqAssist uv run --group eda jupyter nbconvert --to n
 Вторая команда регистрирует ядро Jupyter `reqassist` внутри `.venv`: ноутбук запускается на нём, чтобы использовать пакеты проекта, а не системный Python. Без доступа к внутренним документам ноутбук не выполнится, но все выводы и графики сохранены в нём и видны на GitHub.
 
 Ноутбук печатает только агрегаты, документы обезличены как `doc_01`..`doc_06`. Графики сохраняются в `reports/figures/`.
+
+## Данные эксперимента ДЗ 3
+
+Всё ниже создаётся локально в `data/` и в git не попадает:
+
+| Путь | Что это |
+| --- | --- |
+| `labels/gold.json` | разметка 17 проверяемых пунктов для 5 БТ: статус и цитата-доказательство из документа |
+| `corpus/` | нормализованные документы `doc_01`..`doc_05`, 20 испорченных копий `doc_0N_c1`..`c4` и `manifest.json` (операция порчи, удалённый фрагмент, SHA-256 текста) |
+| `runs/<конфигурация>.jsonl` | ответы модели по документам и запускам: статусы, цитаты, токены, время |
+| `cache/` | кеш ответов модели и эмбеддингов: повторный запуск оценки не вызывает модель |
+
+Разметка копий не хранится отдельно: она выводится из разметки оригинала и удалённых фрагментов из `manifest.json`.
+
+## Воспроизведение эксперимента ДЗ 3
+
+Нужен [Ollama](https://ollama.com) с моделями `gemma3:12b` и `bge-m3`; на ноутбуке с 16 ГБ памяти полный прогон занимает около 8 часов.
+
+```bash
+ollama pull gemma3:12b
+ollama pull bge-m3
+uv sync --group eda --group ml
+REQASSIST_DIR=/путь/к/ReqAssist uv run --group eda --group ml python scripts/hw3_run.py corpus
+REQASSIST_DIR=/путь/к/ReqAssist uv run --group eda --group ml python scripts/hw3_run.py run --method mvp --runs 3
+REQASSIST_DIR=/путь/к/ReqAssist uv run --group eda --group ml python scripts/hw3_run.py run --method lite --runs 3
+REQASSIST_DIR=/путь/к/ReqAssist uv run --group eda --group ml python scripts/hw3_run.py run --method product
+REQASSIST_DIR=/путь/к/ReqAssist uv run --group eda --group ml python scripts/hw3_run.py run --method product_html
+REQASSIST_DIR=/путь/к/ReqAssist uv run --group eda --group ml jupyter nbconvert --to notebook --execute --inplace notebooks/02_models.ipynb
+```
+
+Прогон можно прерывать: уже выполненные пары документ-запуск пропускаются. Ноутбук пересчитывает метрики из `data/runs/`, сохраняет `reports/hw3/metrics.json` и графики в `reports/figures/`.
