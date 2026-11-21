@@ -390,7 +390,8 @@ def evaluate(paths: Paths) -> dict:
 def _paired(methods: dict, gold: dict, by_id: dict) -> dict:
     """MVP против бейзлайнов: разность QWK на срезе eval по первому запуску каждой конфигурации.
 
-    При 5 исходных БТ интервал ориентировочный; значимость различий не утверждается.
+    Сравниваются только документы, где ответ разобран у обеих конфигураций. При 5 исходных
+    БТ интервал ориентировочный; значимость различий не утверждается.
     """
     out = {}
     if "MVP" not in methods:
@@ -403,7 +404,8 @@ def _paired(methods: dict, gold: dict, by_id: dict) -> dict:
         ga = _groups(_pairs(common, gold, by_id, "eval"))
         gb = _groups(_pairs({d: b[d] for d in common}, gold, by_id, "eval"))
         groups = {s: (ga[s], gb[s]) for s in ga if s in gb}
-        if len(groups) < 2:
+        # интервал по 2 источникам - это просто min и max, поэтому нужно не меньше 3
+        if len(groups) < 3:
             continue
         diffs = {
             s: qwk([p for p, _ in x], [e for _, e in x]) - qwk([p for p, _ in y], [e for _, e in y])

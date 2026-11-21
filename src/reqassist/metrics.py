@@ -26,7 +26,7 @@ def completeness_score(statuses: Iterable[Status]) -> int:
 
 
 def score_mae(predicted: Sequence[float], expert: Sequence[float]) -> float:
-    """Средняя абсолютная разница скора модели и эксперта по документам."""
+    """Средняя абсолютная разница скора модели и разметки по документам."""
     if len(predicted) != len(expert):
         raise ValueError("длины predicted и expert не совпадают")
     if not predicted:
@@ -42,7 +42,7 @@ def score_stability(runs: Sequence[float]) -> float:
 
 
 def missing_recall(predicted: Sequence[Status], expert: Sequence[Status]) -> float:
-    """Доля пунктов missing по разметке эксперта, которые модель тоже отметила как missing."""
+    """Доля пунктов missing по разметке, которые модель тоже отметила как missing."""
     pairs = [(p, e) for p, e in zip(predicted, expert, strict=True) if e == "missing"]
     if not pairs:
         raise ValueError("в разметке нет пунктов missing")
@@ -50,7 +50,7 @@ def missing_recall(predicted: Sequence[Status], expert: Sequence[Status]) -> flo
 
 
 def false_completed_rate(predicted: Sequence[Status], expert: Sequence[Status]) -> float:
-    """Доля незаполненных по разметке эксперта пунктов, которые модель отметила как completed."""
+    """Доля незаполненных по разметке пунктов, которые модель отметила как completed."""
     gaps = {"missing", "partial", "partial_placeholder"}
     pairs = [(p, e) for p, e in zip(predicted, expert, strict=True) if e in gaps]
     if not pairs:
@@ -67,6 +67,8 @@ def qwk(predicted: Sequence[Status], expert: Sequence[Status]) -> float:
 
     Пары, где по разметке пункт not_applicable, не учитываются. Если модель поставила
     not_applicable применимому пункту, это ошибка: пункт не проверен, ранг как у missing.
+    Для пункта с разметкой missing такой ответ QWK не штрафует - он учитывается в recall
+    missing и в доле not_applicable на применимых пунктах.
     """
     from sklearn.metrics import cohen_kappa_score
 
@@ -85,7 +87,7 @@ def qwk(predicted: Sequence[Status], expert: Sequence[Status]) -> float:
 
 
 def macro_f1(predicted: Sequence[Status], expert: Sequence[Status]) -> float:
-    """Macro-F1 по статусам, которые встречаются в разметке эксперта."""
+    """Macro-F1 по статусам, которые встречаются в разметке."""
     from sklearn.metrics import f1_score
 
     pairs = [(p, e) for p, e in zip(predicted, expert, strict=True) if e in ORDINAL]

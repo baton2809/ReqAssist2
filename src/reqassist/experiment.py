@@ -165,6 +165,8 @@ def reparse(method: str, docs: list[NormDoc], paths: Paths) -> int:
     """
     cache = paths.data / "cache/llm"
     out = paths.data / f"runs/{method}.jsonl"
+    if not out.exists():
+        return 0
     old = [json.loads(line) for line in out.read_text(encoding="utf-8").splitlines()]
     by_id = {d.doc_id: d for d in docs}
     system, schema, product = _prompt(method, paths)
