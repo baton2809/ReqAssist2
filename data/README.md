@@ -45,7 +45,7 @@ REQASSIST_DIR=/путь/к/ReqAssist uv run --group eda jupyter nbconvert --to n
 
 ## Воспроизведение эксперимента ДЗ 3
 
-Нужен [Ollama](https://ollama.com) с моделями `gemma3:12b` и `bge-m3`; на ноутбуке с 16 ГБ памяти полный прогон занимает около 8 часов.
+Нужен [Ollama](https://ollama.com) с моделями `gemma3:12b` и `bge-m3`; на ноутбуке с 16 ГБ памяти полный прогон занимает около 5 часов работы модели.
 
 ```bash
 ollama pull gemma3:12b
